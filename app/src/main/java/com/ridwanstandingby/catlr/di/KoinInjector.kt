@@ -1,7 +1,6 @@
 package com.ridwanstandingby.catlr.di
 
 import com.ridwanstandingby.catlr.data.CatGraphicApiClient
-import com.ridwanstandingby.catlr.data.CatGraphicPagingSource
 import com.ridwanstandingby.catlr.ui.CatGraphicViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
