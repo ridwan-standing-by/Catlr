@@ -19,6 +19,6 @@ object KoinInjector {
     }
 
     private fun Module.defineUiComponents() {
-        viewModel { CatGraphicViewModel() }
+        viewModel { CatGraphicViewModel(get()) }
     }
 }

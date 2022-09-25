@@ -19,6 +19,7 @@ class CatGraphicActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        vm.start()
         setContent {
             CatlrTheme {
                 // A surface container using the 'background' color from the theme

@@ -21,6 +21,10 @@ android {
     }
 
     buildTypes {
+        all {
+            // TODO : take out of source control into a .gitignore-ed file that is stored in the CI pipeline
+            buildConfigField("String", "CAT_API_KEY", "\"live_OYyf3yY2FTmy2o0b0addaxELosmJGJ8kaC98DDpcrXGUH9eWB6rAyCxRaJEuSuJ6\"")
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -37,7 +41,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
     packagingOptions {
         resources {
@@ -56,6 +60,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.6.0'
 
     // Dependency injection
+    def koin_version = '3.1.4'
     implementation "io.insert-koin:koin-core:$koin_version"
     implementation "io.insert-koin:koin-android:$koin_version"
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
