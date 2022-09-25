@@ -31,12 +31,13 @@ class CatGraphicApiClient {
         }
     }
 
-    suspend fun getCatGraphics(): List<CatGraphic> = withContext(Dispatchers.IO) {
+    suspend fun getCatGraphics(page: Int): List<CatGraphic> = withContext(Dispatchers.IO) {
         client.get("https://api.thecatapi.com/v1/images/search") {
             header("x-api-key", BuildConfig.CAT_API_KEY)
             parameter("mime_types", "gif")
             parameter("order", "random")
             parameter("limit", 10)
+            parameter("page", page)
         }.body<List<ApiCatGraphic>>().map { it.toDomain() }
     }
 }

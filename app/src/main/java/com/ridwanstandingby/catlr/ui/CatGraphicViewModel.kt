@@ -1,19 +1,20 @@
 package com.ridwanstandingby.catlr.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.ridwanstandingby.catlr.data.CatGraphicApiClient
-import kotlinx.coroutines.launch
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import com.ridwanstandingby.catlr.data.CatGraphicPagingSource
+import com.ridwanstandingby.catlr.domain.CatGraphic
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
-class CatGraphicViewModel(private val catGraphicApiClient: CatGraphicApiClient) : ViewModel() {
+class CatGraphicViewModel : ViewModel(), KoinComponent {
 
-    fun start() {
-        // TODO
-        viewModelScope.launch {
-            catGraphicApiClient.getCatGraphics().forEach {
-                Log.d("CAT", it.toString())
-            }
-        }
-    }
+    val pager: Pager<Int, CatGraphic> = Pager(
+        PagingConfig(
+            pageSize = 10,
+            enablePlaceholders = true,
+            maxSize = 300
+        )
+    ) { get<CatGraphicPagingSource>() }
 }
