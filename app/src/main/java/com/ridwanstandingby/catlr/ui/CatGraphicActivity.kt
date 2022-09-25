@@ -1,4 +1,4 @@
-package com.ridwanstandingby.catlr
+package com.ridwanstandingby.catlr.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,8 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ridwanstandingby.catlr.ui.theme.CatlrTheme
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : ComponentActivity() {
+class CatGraphicActivity : ComponentActivity() {
+
+    private val vm by viewModel<CatGraphicViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
