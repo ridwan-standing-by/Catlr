@@ -45,6 +45,7 @@ class CatGraphicViewModel(
     }
 
     fun onSettingsDismissed() {
+        filteredCategories.removeAll { it.isBlank() }
         if (catGraphicMode.value != previousCatGraphicMode ||
             filteredCategories.toList() != previousFilteredCategories.toList()
         ) {

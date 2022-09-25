@@ -4,12 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,6 +28,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.ridwanstandingby.catlr.domain.CatGraphic
+import com.ridwanstandingby.catlr.domain.CatGraphicMode
+import com.ridwanstandingby.catlr.domain.Category
 import com.ridwanstandingby.catlr.ui.theme.CatlrTheme
 import com.skydoves.landscapist.fresco.websupport.FrescoWebImage
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -55,22 +64,103 @@ private fun CatGraphicUi(vm: CatGraphicViewModel) {
         ) {
             CatGraphicList(vm.pager)
             AnimatedVisibility(visible = vm.settingsPanelExpanded.value) {
-                SettingsDialog(vm::onSettingsDismissed)
+                SettingsDialog(vm.catGraphicMode, vm.filteredCategories, vm::onSettingsDismissed)
             }
         }
     }
 }
 
 @Composable
-fun SettingsDialog(onSettingsDismissed: () -> Unit) {
+fun SettingsDialog(
+    catGraphicMode: MutableState<CatGraphicMode>,
+    filteredCategories: SnapshotStateList<Category>,
+    onSettingsDismissed: () -> Unit
+) {
     Dialog(onDismissRequest = { onSettingsDismissed() }) {
         Card(Modifier) {
-            Column(Modifier.padding(16.dp)) {
+            Column(
+                Modifier
+                    .padding(16.dp)
+                    .defaultMinSize(minWidth = 220.dp)
+                    .wrapContentHeight()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(text = "Graphics to load:", style = MaterialTheme.typography.h5)
 
-                Button(onClick = onSettingsDismissed, Modifier.align(Alignment.End)) {
+                CatGraphicMode.values().forEach {
+                    CatGraphicModeOption(
+                        selectedMode = catGraphicMode,
+                        thisMode = it
+                    )
+                }
+
+                Divider(Modifier.padding(top = 8.dp))
+
+                Text(text = "Categories to filter out:", style = MaterialTheme.typography.h5)
+
+                filteredCategories.forEachIndexed { index, _ ->
+                    EditableCategory(
+                        filteredCategories = filteredCategories,
+                        thisCategoryIndex = index
+                    )
+                }
+
+                IconButton(onClick = { filteredCategories.add("") }) {
+                    Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add category")
+                }
+
+                Divider(Modifier.padding(top = 8.dp))
+
+                Button(
+                    onClick = onSettingsDismissed,
+                    Modifier
+                        .align(Alignment.End)
+                        .padding(top = 8.dp)
+                ) {
                     Text("OK", Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun CatGraphicModeOption(selectedMode: MutableState<CatGraphicMode>, thisMode: CatGraphicMode) {
+    Row(
+        Modifier
+            .padding(top = 8.dp)
+            .clickable { selectedMode.value = thisMode }) {
+        RadioButton(
+            selected = selectedMode.value == thisMode,
+            onClick = null,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+        Text(
+            text = when (thisMode) {
+                CatGraphicMode.IMAGES -> "Images"
+                CatGraphicMode.GIFS -> "Gifs"
+                CatGraphicMode.BOTH -> "Both"
+            }
+        )
+    }
+}
+
+@Composable
+fun EditableCategory(filteredCategories: SnapshotStateList<Category>, thisCategoryIndex: Int) {
+    Row(
+        Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+    ) {
+        TextField(value = filteredCategories[thisCategoryIndex], onValueChange = {
+            filteredCategories[thisCategoryIndex] = it.take(20)
+        }, Modifier.weight(0.8f))
+
+        IconButton(
+            onClick = { filteredCategories.removeAt(thisCategoryIndex) },
+            modifier = Modifier.weight(0.2f)
+        ) {
+            Icon(imageVector = Icons.Rounded.Close, contentDescription = "Remove category")
         }
     }
 }
