@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Catlr</string>
+    <string name="waiting_for_items_to_load">Waiting for items to load…</string>
+    <string name="remove_category">Remove category</string>
+    <string name="images">Images</string>
+    <string name="gifs">Gifs</string>
+    <string name="both">Both</string>
+    <string name="ok">OK</string>
+    <string name="add_category">Add category</string>
+    <string name="categories_to_filter">Categories to filter out:</string>
+    <string name="graphics_to_load">Graphics to load:</string>
+    <string name="options">Options</string>
 </resources>
