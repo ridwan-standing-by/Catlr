@@ -17,10 +17,9 @@ object KoinInjector {
 
     private fun Module.defineDomainComponents() {
         single { CatGraphicApiClient() }
-        factory { CatGraphicPagingSource(get()) }
     }
 
     private fun Module.defineUiComponents() {
-        viewModel { CatGraphicViewModel() }
+        viewModel { CatGraphicViewModel(get()) }
     }
 }

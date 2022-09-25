@@ -2,6 +2,7 @@ package com.ridwanstandingby.catlr.data
 
 import com.ridwanstandingby.catlr.BuildConfig
 import com.ridwanstandingby.catlr.domain.CatGraphic
+import com.ridwanstandingby.catlr.domain.CatGraphicMode
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -31,16 +32,24 @@ class CatGraphicApiClient {
         }
     }
 
-    suspend fun getCatGraphics(page: Int): List<CatGraphic> = withContext(Dispatchers.IO) {
-        client.get("https://api.thecatapi.com/v1/images/search") {
-            header("x-api-key", BuildConfig.CAT_API_KEY)
-            parameter("mime_types", "gif")
-            parameter("order", "random")
-            parameter("limit", 10)
-            parameter("page", page)
-        }.body<List<ApiCatGraphic>>().map { it.toDomain() }
-    }
+    suspend fun getCatGraphics(page: Int, graphicMode: CatGraphicMode): List<CatGraphic> =
+        withContext(Dispatchers.IO) {
+            client.get("https://api.thecatapi.com/v1/images/search") {
+                header("x-api-key", BuildConfig.CAT_API_KEY)
+                parameter("mime_types", graphicMode.toApiString())
+                parameter("order", "random")
+                parameter("limit", CatGraphicPagingSource.PAGE_SIZE)
+                parameter("page", page)
+            }.body<List<ApiCatGraphic>>().map { it.toDomain() }
+        }
 }
+
+fun CatGraphicMode.toApiString() =
+    when (this) {
+        CatGraphicMode.IMAGES -> "jpg,png"
+        CatGraphicMode.GIFS -> "gif"
+        CatGraphicMode.BOTH -> "jpg,png,gif"
+    }
 
 @Serializable
 data class ApiCatGraphic(
